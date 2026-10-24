@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>DC Nice Car · 桌面端设计稿</title>
+<link rel="stylesheet" href="../win1step/tokens.css">
+<link rel="stylesheet" href="../win1step/base.css">
+<link rel="stylesheet" href="mockups.css">
+<style>
+  .wrap { width: 1200px; margin: 0 auto; padding: 56px 0; display: grid; gap: 28px; }
+  .hero h1 { margin-top: 10px; font-size: 34px; font-weight: 900; letter-spacing: -0.03em; }
+  .hero p { margin-top: 6px; color: var(--muted); font-size: 15px; }
+  .dirs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .dir .card-body { display: grid; gap: 10px; }
+  .dir h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+  .dir p { color: var(--text-2); font-size: 13px; line-height: 1.6; min-height: 84px; }
+  .lnk { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; font-weight: 800; }
+  .lnk span { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+  .letter { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--brand-black); color: #fff; font-family: var(--font-mono); font-size: 18px; font-weight: 800; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="brand"><span class="brand-mark">DC</span><span class="brand-word"><b>DC</b> NICE CAR</span><span class="brand-sub">桌面端设计稿 · <span class="num">1440×900</span></span></div>
+    <h1>车辆短视频生成 · 3 个布局方向</h1>
+    <p>每个方向 2 屏：AI 识别确认 → 视频与文案结果。样例车辆：2024 Honda Accord Hybrid Sport。</p>
+  </div>
+  <div class="dirs">
+    <section class="card card-bar dir"><div class="card-body" style="padding-top:26px">
+      <span class="letter">A</span><h3>Studio 工作台</h3>
+      <p>顶栏 + 三栏：左侧照片按镜头排序，中间 9:16 大预览舞台，右侧信息表单 / 文案与下载。适合熟练销售一屏完成。</p>
+      <a class="lnk" href="A1-studio-recognize.html">A1 · AI 识别<span>A1-studio-recognize</span></a>
+      <a class="lnk" href="A2-studio-result.html">A2 · 视频完成<span>A2-studio-result</span></a>
+    </div></section>
+    <section class="card card-bar dir"><div class="card-body" style="padding-top:26px">
+      <span class="letter">B</span><h3>Guided wizard 引导式</h3>
+      <p>顶部 4 步进度条，单一大面板 + 底部固定操作栏（上一步 / 下一步）。留白充足，适合新手与第一次使用。</p>
+      <a class="lnk" href="B1-wizard-recognize.html">B1 · 第 2 步 确认识别<span>B1-wizard-recognize</span></a>
+      <a class="lnk" href="B2-wizard-result.html">B2 · 第 4 步 发布<span>B2-wizard-result</span></a>
+    </div></section>
+    <section class="card card-bar dir"><div class="card-body" style="padding-top:26px">
+      <span class="letter">C</span><h3>Dashboard 控制台</h3>
+      <p>左侧导航 + 顶部搜索；KPI 指标条、最近视频列表与新建视频工作面板并排。适合每天批量上架多台车的门店。</p>
+      <a class="lnk" href="C1-dashboard-recognize.html">C1 · 识别面板<span>C1-dashboard-recognize</span></a>
+      <a class="lnk" href="C2-dashboard-result.html">C2 · 结果面板<span>C2-dashboard-result</span></a>
+    </div></section>
+  </div>
+</div>
+</body>
+</html>

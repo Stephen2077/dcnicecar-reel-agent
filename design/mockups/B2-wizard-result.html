@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>B2 · Wizard · 发布 — DC Nice Car</title>
+<link rel="stylesheet" href="../win1step/tokens.css">
+<link rel="stylesheet" href="../win1step/base.css">
+<link rel="stylesheet" href="mockups.css">
+<style>
+  .steps-row { height: 76px; flex: none; display: grid; place-items: center; }
+  .main { flex: 1; min-height: 0; display: flex; justify-content: center; padding: 4px 0 20px; }
+  .panel { width: 1280px; display: grid; grid-template-columns: 1fr 568px; }
+  .pane { min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 22px 28px 20px; }
+  .pane + .pane { border-left: 1px solid var(--line-soft); background: #fcfcfc; }
+  .pane-head h2 { margin-top: 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .pane-head p { margin-top: 2px; color: var(--muted); font-size: 13px; font-weight: 500; }
+  .stage { flex: 1; min-height: 0; display: flex; gap: 36px; align-items: center; padding-left: 12px; }
+  .stage .reel { height: 500px; }
+  .meta-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+  .vers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ver { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+  .ver img { width: 54px; height: 96px; object-fit: cover; border-radius: 8px; }
+  .ver b { display: block; font-size: 14px; font-weight: 800; }
+  .ver span { color: var(--muted); font-size: 12px; font-weight: 600; }
+  .ver.on { border-color: var(--brand-red); box-shadow: 0 0 0 3px var(--brand-red-ring); }
+  .ver.on b { color: var(--brand-red); }
+  .dl { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: #fff; box-shadow: var(--shadow-sm); }
+  .actionbar { height: 76px; flex: none; display: flex; justify-content: center; background: rgba(255,255,255,.92); border-top: 1px solid var(--line); box-shadow: 0 -10px 30px rgba(5,5,5,.04); }
+  .actionbar-in { width: 1280px; display: flex; align-items: center; gap: 16px; }
+  .actionbar-in .spacer { flex: 1; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7 9.5l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M3 16v-3l2.2-5A2 2 0 0 1 7 7h10a2 2 0 0 1 1.8 1L21 13v3zM3 13h18"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5zM4 7.5l8 3.5 8-3.5M12 11v9"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 4v16M16 4v16M4 9h4M4 15h4M16 9h4M16 15h4"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6h14M5 11h14M5 16h9"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4.5 9.5 6a17 17 0 0 1-2.6 3.2M6.5 7.6A16 16 0 0 0 2.5 12c1 1.5 4.5 6 9.5 6a9.6 9.6 0 0 0 4.4-1.1"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.7-4.4M4 4v4h4M4 13a8 8 0 0 0 14.7 4.4M20 20v-4h-4"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4"/></symbol>
+  <symbol id="i-cc" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10.5 10.2a2.4 2.4 0 1 0 0 3.6M17 10.2a2.4 2.4 0 1 0 0 3.6"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 13v6h14v-6"/></symbol>
+</svg>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">DC</span><span class="brand-word"><b>DC</b> NICE CAR</span><span class="brand-sub">车辆视频生成</span></div>
+    <div class="spacer"></div>
+    <span class="muted" style="font-size:13px;font-weight:700">2024 Honda Accord Hybrid Sport</span>
+    <div class="seg"><span class="on">中文</span><span>EN</span></div>
+    <span class="avatar">SM</span>
+  </header>
+
+  <div class="steps-row">
+    <div class="stepper">
+      <div class="step done"><span class="dot"><svg class="ico"><use href="#i-check"/></svg></span>上传照片</div>
+      <span class="step-line done"></span>
+      <div class="step done"><span class="dot"><svg class="ico"><use href="#i-check"/></svg></span>确认 AI 识别</div>
+      <span class="step-line done"></span>
+      <div class="step done"><span class="dot"><svg class="ico"><use href="#i-check"/></svg></span>生成视频</div>
+      <span class="step-line done"></span>
+      <div class="step now"><span class="dot">4</span>发布</div>
+    </div>
+  </div>
+
+  <main class="main">
+    <section class="card card-bar panel">
+      <!-- LEFT · video -->
+      <div class="pane">
+        <div class="pane-head">
+          <div class="eyebrow">Step 4 · Final reel</div>
+          <h2>视频已生成，可以发布了</h2>
+          <p>中文、English 两个版本均已生成，旁白与字幕已烧录</p>
+        </div>
+        <div class="stage">
+          <div class="reel">
+            <img src="img/frame-zh-16s.jpg" alt="">
+            <span class="reel-badge">中文版</span>
+            <span class="reel-play"><svg><use href="#i-play"/></svg></span>
+            <div class="reel-ctrl">
+              <div class="scrub"><i></i></div>
+              <div class="reel-time"><span>00:12 / 00:30</span><span style="display:flex;gap:10px"><svg class="ico"><use href="#i-cc"/></svg><svg class="ico"><use href="#i-vol"/></svg></span></div>
+            </div>
+          </div>
+          <div class="meta-col">
+            <div>
+              <div class="section-label"><span>旁白版本</span></div>
+              <div class="vers">
+                <div class="ver on"><img src="img/frame-zh-1s.jpg" alt=""><div><b>中文</b><span>普通话旁白</span></div></div>
+                <div class="ver"><img src="img/frame-en-1s.jpg" alt=""><div><b>English</b><span>英文旁白</span></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="section-label"><span>视频参数</span></div>
+              <div class="specs">
+                <div><span class="k">时长</span><span class="v num">00:30</span></div>
+                <div><span class="k">画幅</span><span class="v num">9:16 · 1080×1920</span></div>
+                <div><span class="k">字幕</span><span class="v">开</span></div>
+                <div><span class="k">格式 / 大小</span><span class="v num">MP4 · 18.4 MB</span></div>
+              </div>
+            </div>
+            <div style="display:grid;gap:8px">
+              <span class="check-line"><svg class="ico"><use href="#i-check"/></svg>配置 Sport、内饰灰色 已人工确认</span>
+              <span class="check-line" style="color:var(--warn)"><svg class="ico"><use href="#i-eye-off"/></svg>漆名 Crystal Black 未确认，未写入视频</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT · download + publish -->
+      <div class="pane">
+        <div class="dl">
+          <div class="file-row">
+            <span class="file-ico">MP4</span>
+            <div class="meta">
+              <b>DCNiceCar_Accord_Hybrid_zh.mp4</b>
+              <span class="num">18.4 MB · 1080×1920 · 00:30</span>
+            </div>
+            <button class="btn btn-lg"><svg class="ico"><use href="#i-download"/></svg>下载 MP4</button>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin:2px 0 -4px"><span>发布文案 · 复制后粘贴到平台</span><span style="font-weight:600">AI 生成 · 可编辑</span></div>
+
+        <div class="cap">
+          <div class="cap-head">
+            <span class="plat xhs">小红书</span>
+            <b>小红书笔记</b><span class="count num">138 字</span>
+            <span class="spacer"></span>
+            <button class="btn btn-sm btn-copied"><svg class="ico"><use href="#i-check"/></svg>已复制 ✓</button>
+          </div>
+          <div class="cap-body">
+            <div class="cap-title">24年本田雅阁混动 Sport｜2.7万英里黑武士🖤</div>
+            姐妹们快看！这台24年本田雅阁混动Sport真的太香了<br>
+            开起来省油又安静，内外都保持得很新<br>
+            黑色外观+灰色内饰，高级又大气<br>
+            才跑了<span class="num">27,739</span>英里，只要<span class="num">$29,980</span><br>
+            喜欢的朋友赶紧私信 DC Nice Car～
+            <div class="cap-tags">#二手车 #本田雅阁 #混动 #纽约买车 #DCNiceCar</div>
+          </div>
+        </div>
+
+        <div class="cap">
+          <div class="cap-head">
+            <span class="plat fb">f</span>
+            <b>Facebook Marketplace</b><span class="count num">186 chars</span>
+            <span class="spacer"></span>
+            <button class="btn btn-secondary btn-sm"><svg class="ico"><use href="#i-copy"/></svg>复制</button>
+          </div>
+          <div class="cap-body">
+            <div class="cap-title">2024 Honda Accord Hybrid Sport – <span class="num">27,739</span> mi – <span class="num">$29,980</span></div>
+            Only <span class="num">27,739</span> miles, black exterior / grey interior, smooth efficient hybrid power, FWD automatic. Sporty handling meets hybrid savings. Message DC Nice Car today to schedule a test drive.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="actionbar">
+    <div class="actionbar-in">
+      <button class="btn btn-secondary"><svg class="ico"><use href="#i-left"/></svg>上一步</button>
+      <span class="muted" style="font-size:13px;font-weight:700">步骤 <span class="num">4 / 4</span></span>
+      <div class="spacer"></div>
+      <span class="check-line" style="font-size:13px"><svg class="ico"><use href="#i-check"/></svg>视频与文案已就绪</span>
+      <button class="btn btn-dark btn-lg"><svg class="ico"><use href="#i-plus"/></svg>完成 · 新建下一台车</button>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f7">
+<title>dcnicecar reel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* WIN1STEP design system — tokens from tokens.css, components adapted from design/win1step/base.css */
+  *, *::before, *::after { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; min-height:100vh; }
+  body { background:var(--page-wash); color:var(--text); font:500 16px/1.55 var(--font-body); -webkit-font-smoothing:antialiased; }
+  button, input, select, textarea { font:inherit; color:inherit; }
+  :focus-visible { outline:2px solid var(--brand-red); outline-offset:2px; }
+
+  main { max-width:520px; margin:0 auto; padding:max(20px, calc(4px + env(safe-area-inset-top))) var(--space-5) calc(var(--space-10) + env(safe-area-inset-bottom)); }
+  header { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-6); }
+  .brand { font:800 18px/1 var(--font-display); letter-spacing:-.02em; text-transform:uppercase; color:var(--brand-black); }
+  .brand b { color:var(--brand-red); font-weight:800; }
+
+  /* Segmented control (pill) */
+  .seg { display:flex; gap:2px; border:1px solid var(--line); border-radius:var(--radius-pill); padding:3px; background:var(--surface); box-shadow:var(--shadow-sm); }
+  .seg button { border:0; background:none; color:var(--text-2); font:700 13px var(--font-display); padding:7px 12px; border-radius:var(--radius-pill); cursor:pointer;
+    transition:background var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease); }
+  .seg button:hover { background:var(--surface-2); color:var(--text); }
+  .seg button.on { background:var(--brand-red); color:var(--accent-on); }
+
+  h1 { font:800 32px/1.12 var(--font-display); letter-spacing:-.02em; margin:0 0 var(--space-2); color:var(--text); }
+  .sub { color:var(--muted); margin:0 0 var(--space-5); font-size:15px; }
+
+  /* Card: white surface + soft shadow + 5px red→black bar on top */
+  .picker, .fields, .steps, .copy { position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); }
+  .picker::before, .fields::before, .steps::before, .copy::before { content:""; position:absolute; inset:0 0 auto; height:5px; background:var(--gradient-brand-bar); z-index:1; }
+
+  /* Upload card */
+  .picker { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:var(--space-2); width:100%; min-height:180px;
+    color:var(--text); cursor:pointer; text-align:center; padding:var(--space-6) var(--space-5) var(--space-5);
+    transition:border-color var(--motion-fast) var(--ease), background var(--motion-fast) var(--ease), transform var(--motion-fast) var(--ease); }
+  .picker:hover { border-color:var(--brand-red); }
+  .picker:active { border-color:var(--brand-red); background:var(--brand-red-soft); }
+  .picker .plus { width:56px; height:56px; border-radius:var(--radius-pill); background:var(--brand-red); color:var(--accent-on); display:grid; place-items:center; font:700 34px/1 var(--font-display);
+    transition:background var(--motion-fast) var(--ease); }
+  .picker:hover .plus { background:var(--brand-red-dark); }
+  .picker strong { font:800 18px var(--font-display); letter-spacing:-.01em; }
+  .picker span { color:var(--muted); font-size:14px; }
+  .picker.small { min-height:0; flex-direction:row; padding:var(--space-4) var(--space-4) var(--space-3); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); }
+  .picker.small .plus { width:32px; height:32px; font-size:22px; }
+  .picker.small span { display:none; }
+  input[type=file] { display:none; }
+
+  /* Thumbnails */
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-2); margin:var(--space-3) 0 0; }
+  .grid:empty { display:none; }
+  .thumb { position:relative; aspect-ratio:1; border-radius:var(--radius-sm); overflow:hidden; background:var(--surface-3); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb button { position:absolute; top:6px; right:6px; width:28px; height:28px; border-radius:var(--radius-pill); border:0; background:rgba(5,5,5,.72); color:#fff; font:700 16px/28px var(--font-display); padding:0; cursor:pointer;
+    transition:background var(--motion-fast) var(--ease); }
+  .thumb button:hover { background:var(--brand-red); }
+  .thumb .n { position:absolute; left:6px; bottom:6px; font:700 11px var(--font-mono); font-variant-numeric:tabular-nums; background:rgba(5,5,5,.72); color:#fff; padding:2px 6px; border-radius:var(--radius-pill); }
+  .count { display:flex; justify-content:space-between; color:var(--muted); font-size:13px; font-weight:700; margin-top:var(--space-3); font-family:var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+  .count:has(span:empty + span:empty) { display:none; }
+  .count .ok { color:var(--brand-red); font-weight:800; }
+
+  /* Fields card (base.css .field) */
+  .fields { margin-top:var(--space-6); display:grid; grid-template-columns:1fr 1fr; gap:var(--space-4) var(--space-3); padding:var(--space-6) var(--space-5) var(--space-5); }
+  .fields .full { grid-column:1 / -1; }
+  .fields label, .tweak label { display:block; margin:0 0 7px; color:var(--text); font-size:13px; font-weight:800; letter-spacing:-.005em; }
+  input[type=text], input[type=tel] { width:100%; height:46px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm); color:var(--text);
+    font:600 16px var(--font-display); padding:0 13px; outline:none;
+    transition:border-color var(--motion-fast) var(--ease), box-shadow var(--motion-fast) var(--ease); }
+  input::placeholder { color:var(--muted); opacity:1; }
+  input:focus { border-color:var(--brand-red); box-shadow:0 0 0 4px var(--brand-red-ring); }
+  input.num { font-family:var(--font-mono); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
+  .hint { font-size:12px; font-weight:500; color:var(--muted); margin-top:6px; min-height:18px; }
+  .hint.live { color:var(--brand-red); font-weight:700; }
+  details { grid-column:1 / -1; }
+  summary { color:var(--text-2); font-size:13px; font-weight:800; cursor:pointer; list-style:none; padding:4px 0; border-radius:var(--radius-sm);
+    transition:color var(--motion-fast) var(--ease); }
+  summary::-webkit-details-marker { display:none; }
+  summary:hover { color:var(--brand-red); }
+  summary::before { content:"+ "; font-family:var(--font-mono); color:var(--brand-red); }
+  details[open] summary::before { content:"– "; }
+  details input { margin-top:var(--space-2); }
+
+  /* Primary CTA (base.css .btn .btn-lg) */
+  .volt { width:100%; min-height:56px; margin-top:var(--space-6); border:1px solid transparent; border-radius:var(--radius-md); background:var(--brand-red); color:var(--accent-on);
+    font:800 18px var(--font-display); letter-spacing:-.01em; padding:0 22px; text-transform:uppercase; cursor:pointer; box-shadow:var(--shadow-sm);
+    transition:background var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease), transform var(--motion-fast) var(--ease), box-shadow var(--motion-fast) var(--ease); }
+  .volt:hover { background:var(--brand-red-dark); transform:translateY(-1px); box-shadow:var(--shadow-md); }
+  .volt:active { background:var(--brand-red-dark); transform:translateY(0); }
+  .volt:disabled { background:var(--surface-3); color:var(--muted); cursor:not-allowed; transform:none; box-shadow:none; }
+  .err { color:var(--brand-red-dark); font-size:14px; font-weight:700; margin-top:var(--space-3); min-height:20px; text-align:center; }
+
+  /* Progress card */
+  .steps { list-style:none; padding:5px var(--space-5) 0; margin:var(--space-6) 0 0; }
+  .steps li { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-4) 0; color:var(--muted); border-bottom:1px solid var(--line-soft); font-weight:700;
+    transition:color var(--motion-base) var(--ease); }
+  .steps li:last-child { border-bottom:0; }
+  .steps li i { width:22px; height:22px; border-radius:var(--radius-pill); border:2px solid var(--surface-3); flex:none;
+    transition:background var(--motion-base) var(--ease), border-color var(--motion-base) var(--ease); }
+  .steps li.now { color:var(--text); }
+  .steps li.now i { border-color:var(--brand-red); border-top-color:transparent; animation:spin .9s linear infinite; }
+  .steps li.done { color:var(--text); }
+  .steps li.done i { background:var(--brand-red); border-color:var(--brand-red); }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .steps li.now i { animation-duration:2.4s; } }
+
+  /* Result */
+  .result video { width:100%; aspect-ratio:9/16; border-radius:var(--radius-xl); background:var(--brand-black); display:block; margin-top:var(--space-2); box-shadow:var(--shadow-lg); }
+  .row { display:flex; gap:10px; margin-top:var(--space-3); }
+  /* Buttons (base.css .btn-secondary / .btn) */
+  .btn { flex:1; min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); text-align:center; text-decoration:none;
+    border:1px solid color-mix(in oklab, var(--accent), var(--line) 40%); border-radius:var(--radius-sm); background:var(--surface); color:var(--text);
+    font:800 15px var(--font-display); padding:0 18px; cursor:pointer;
+    transition:background var(--motion-fast) var(--ease), border-color var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease), transform var(--motion-fast) var(--ease); }
+  .btn:hover { background:var(--accent-soft); border-color:var(--accent); }
+  .btn:active { transform:translateY(0); }
+  .btn.primary { background:var(--brand-red); color:var(--accent-on); border-color:transparent; }
+  .btn.primary:hover { background:var(--brand-red-dark); transform:translateY(-1px); }
+  .btn.primary:active { background:var(--brand-red-dark); transform:translateY(0); }
+
+  /* Copy cards */
+  .copy { margin-top:var(--space-5); padding:var(--space-5) var(--space-4) var(--space-4); box-shadow:var(--shadow-sm); }
+  .copy .head { display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-2); }
+  .copy .head span { font:800 15px var(--font-display); letter-spacing:-.01em; }
+  .copy .head button { min-height:32px; border:1px solid var(--brand-black); background:var(--brand-black); color:#fff; font:800 13px var(--font-display); border-radius:var(--radius-pill); padding:0 14px; cursor:pointer;
+    transition:background var(--motion-fast) var(--ease), border-color var(--motion-fast) var(--ease); }
+  .copy .head button:hover { background:#1a1a1a; border-color:#1a1a1a; }
+  .copy pre { margin:0; white-space:pre-wrap; background:var(--surface-2); border:1px solid var(--line-soft); border-radius:var(--radius-sm); padding:14px; font:500 14px/1.55 var(--font-body); max-height:220px; overflow:auto; color:var(--text); }
+
+  .tweak { margin-top:var(--space-6); }
+  .tweak .row input { flex:1; }
+  .tweak .row .btn { flex:none; padding:0 var(--space-4); }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">dcnice<b>car</b></div>
+    <div class="seg" id="lang">
+      <button data-l="zh">中文</button><button data-l="en">EN</button><button data-l="both" data-t="both"></button>
+    </div>
+  </header>
+
+  <section id="form">
+    <h1 data-t="h1"></h1>
+    <p class="sub" data-t="sub"></p>
+    <label class="picker" id="pick">
+      <div class="plus">+</div>
+      <strong data-t="pick"></strong>
+      <span data-t="pickHint"></span>
+      <input type="file" id="file" accept="image/*" multiple>
+    </label>
+    <div class="grid" id="grid"></div>
+    <div class="count"><span id="count"></span><span id="recog"></span></div>
+
+    <div class="fields">
+      <div class="full">
+        <label data-t="yearModel"></label>
+        <input type="text" id="yearModel" autocomplete="off">
+        <div class="hint" id="ymHint"></div>
+      </div>
+      <div><label data-t="price"></label><input type="text" inputmode="numeric" class="num" id="price" placeholder="$"></div>
+      <div><label data-t="mileage"></label><input type="text" inputmode="numeric" class="num" id="mileage"></div>
+      <div class="full"><label data-t="contact"></label><input type="text" id="contact" autocomplete="off"></div>
+      <details><summary data-t="vin"></summary><input type="text" id="vin" class="num" maxlength="17" autocapitalize="characters" autocomplete="off"></details>
+    </div>
+    <button class="volt" id="make" disabled data-t="make"></button>
+    <div class="err" id="err"></div>
+  </section>
+
+  <section id="progress" class="hidden">
+    <h1 data-t="working"></h1>
+    <p class="sub" data-t="workingSub"></p>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section id="result" class="result hidden">
+    <div class="seg hidden" id="vlang" style="width:max-content"><button data-v="zh">中文</button><button data-v="en">EN</button></div>
+    <video id="video" controls playsinline></video>
+    <div class="row">
+      <a class="btn primary" id="dl" data-t="download"></a>
+      <button class="btn" id="again" data-t="again"></button>
+    </div>
+    <div class="copy" id="xhsBox"><div class="head"><span data-t="xhs"></span><button data-c="xhs" data-t="copy"></button></div><pre id="xhs"></pre></div>
+    <div class="copy" id="mpBox"><div class="head"><span data-t="mp"></span><button data-c="mp" data-t="copy"></button></div><pre id="mp"></pre></div>
+    <div class="tweak">
+      <label data-t="tweak"></label>
+      <div class="row"><input type="text" id="tweak" maxlength="200"><button class="btn primary" id="tweakGo" data-t="redo"></button></div>
+    </div>
+    <div class="err" id="err2"></div>
+  </section>
+</main>
+<script>
+const T = {
+  zh: { both:"双语", h1:"拍几张车照，<br>一键出视频", sub:"上传 3–12 张照片，自动识别车型，30 秒短视频 + 文案。",
+    pick:"拍照或从相册选", pickHint:"3–12 张 · 外观、内饰、仪表都可以", add:"继续添加",
+    yearModel:"年份和车型", price:"价格（可选）", mileage:"里程（可选）", contact:"联系方式（可选）", vin:"VIN（可选）",
+    make:"生成视频", working:"正在制作…", workingSub:"大约 1–3 分钟，可以先放着。",
+    steps:["读取照片","撰写脚本","录制配音","渲染视频"], download:"下载 MP4", again:"再做一个",
+    xhs:"小红书文案", mp:"Marketplace 文案", copy:"复制", copied:"已复制", tweak:"一句话微调：换个开头 / 价格写大点",
+    redo:"重做", recognizing:"识别中…", recognized:"已识别，可修改", ymPh:"例如 2024 Honda Accord", ymHint:"自动识别，年份请自己填写",
+    count:n=>`${n} / 12 张`, need:n=>`还差 ${n} 张`,
+    errors:{ network:"网络有点问题，请重试", photos:"请至少上传 3 张照片", busy:"正在制作上一个视频，请稍等", max:"最多 12 张照片", big:"照片太大了（每张最多 10 MB）" } },
+  en: { both:"Both", h1:"Snap the car.<br>Get a reel.", sub:"Upload 3–12 photos. We spot the model and make a 30-second reel plus captions.",
+    pick:"Take or choose photos", pickHint:"3–12 photos · outside, inside, dash", add:"Add more",
+    yearModel:"Year & model", price:"Price (optional)", mileage:"Mileage (optional)", contact:"Contact (optional)", vin:"VIN (optional)",
+    make:"Make reel", working:"Making your reel…", workingSub:"About 1–3 minutes. Feel free to wait here.",
+    steps:["Reading photos","Writing script","Recording voice","Rendering video"], download:"Download MP4", again:"Make another",
+    xhs:"小红书文案", mp:"Marketplace copy", copy:"Copy", copied:"Copied", tweak:"One-line tweak: new opening / bigger price",
+    redo:"Redo", recognizing:"Recognizing…", recognized:"Recognized — edit if needed", ymPh:"e.g. 2024 Honda Accord", ymHint:"Auto-filled. Please add the year.",
+    count:n=>`${n} / 12 photos`, need:n=>`${n} more needed`,
+    errors:{ network:"Network issue, try again", photos:"Please add at least 3 photos", busy:"Still making the last reel, one moment", max:"12 photos max", big:"Photo too large (10 MB max each)" } },
+};
+const $ = id => document.getElementById(id);
+let lang = localStorage.getItem("lang") || "zh";
+let photos = [];           // {file, url}
+let jobId = null, recogSeq = 0, recogTimer = null, poll = null, lastErr = null;
+const ui = () => T[lang === "en" ? "en" : "zh"];   // "Both" keeps the Chinese UI; it only changes the videos made
+
+function render() {
+  document.documentElement.lang = lang === "en" ? "en" : "zh";
+  document.querySelectorAll("#lang button").forEach(b => b.classList.toggle("on", b.dataset.l === lang));
+  document.querySelectorAll("[data-t]").forEach(el => { const v = ui()[el.dataset.t]; if (typeof v === "string") el.innerHTML = v; });
+  $("yearModel").placeholder = ui().ymPh;
+  $("pick").classList.toggle("small", photos.length > 0);
+  $("pick").querySelector("strong").textContent = photos.length ? ui().add : ui().pick;
+  $("pick").classList.toggle("hidden", photos.length >= 12);
+  $("grid").innerHTML = photos.map((p, i) => `<div class="thumb"><img src="${p.url}" alt=""><span class="n">${i + 1}</span><button data-rm="${i}" aria-label="remove">×</button></div>`).join("");
+  const n = photos.length;
+  $("count").innerHTML = n ? (n < 3 ? ui().need(3 - n) : `<span class="ok">${ui().count(n)}</span>`) : "";
+  $("make").disabled = n < 3 || !jobId;
+  $("steps").innerHTML = ui().steps.map(s => `<li><i></i>${s}</li>`).join("");
+  showErr(lastErr);
+}
+function showErr(code, el = "err") { lastErr = code; $("err").textContent = $("err2").textContent = ""; if (code) $(el).textContent = ui().errors[code] || ui().errors.network; }
+
+$("lang").onclick = e => { const l = e.target.dataset.l; if (!l) return; lang = l; localStorage.setItem("lang", l); render(); refreshSteps(); };
+$("file").onchange = e => {
+  const files = [...e.target.files].filter(f => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+  e.target.value = "";
+  let err = null;
+  for (const f of files) {
+    if (f.size > 10 * 1024 * 1024) { err = "big"; continue; }
+    if (photos.length >= 12) { err = "max"; break; }
+    photos.push({ file: f, url: URL.createObjectURL(f) });
+  }
+  showErr(err); photosChanged();
+};
+$("grid").onclick = e => {
+  const i = e.target.dataset.rm; if (i === undefined) return;
+  URL.revokeObjectURL(photos[i].url); photos.splice(+i, 1); photosChanged();
+};
+
+function photosChanged() {
+  jobId = null; render();
+  clearTimeout(recogTimer);
+  $("recog").textContent = ""; $("recog").className = "";
+  if (photos.length >= 3) recogTimer = setTimeout(recognize, 700);
+}
+async function recognize() {
+  const seq = ++recogSeq;
+  $("recog").textContent = ui().recognizing;
+  const fd = new FormData();
+  photos.forEach(p => fd.append("photos", p.file, p.file.name));
+  try {
+    const r = await fetch("/api/jobs", { method: "POST", body: fd });
+    const j = await r.json();
+    if (seq !== recogSeq) return;
+    if (!r.ok) throw j.error;
+    jobId = j.id;
+    if (j.yearModel && !$("yearModel").dataset.touched) $("yearModel").value = j.yearModel;
+    $("recog").textContent = ""; $("ymHint").textContent = ui().ymHint; $("ymHint").className = "hint live";
+    showErr(null);
+  } catch (code) {
+    if (seq !== recogSeq) return;
+    $("recog").textContent = ""; showErr(typeof code === "string" ? code : "network");
+  }
+  render();
+}
+$("yearModel").oninput = () => { $("yearModel").dataset.touched = "1"; };
+
+async function post(url, body) {
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) throw (await r.json().catch(() => ({}))).error || "network";
+}
+$("make").onclick = async () => {
+  try {
+    await post(`/api/jobs/${jobId}/make`, { lang, price: $("price").value, mileage: $("mileage").value, yearModel: $("yearModel").value,
+      contact: $("contact").value, vin: $("vin").value });
+    show("progress"); watch("err");
+  } catch (c) { showErr(c); }
+};
+$("tweakGo").onclick = async () => {
+  const t = $("tweak").value.trim(); if (!t) return;
+  try { await post(`/api/jobs/${jobId}/tweak`, { tweak: t }); show("progress"); watch("err2"); }
+  catch (c) { showErr(c, "err2"); }
+};
+$("again").onclick = () => { photos.forEach(p => URL.revokeObjectURL(p.url)); photos = []; jobId = null; $("yearModel").value = ""; delete $("yearModel").dataset.touched;
+  ["price","mileage","contact","vin","tweak"].forEach(id => $(id).value = ""); $("ymHint").textContent = ""; show("form"); render(); };
+
+function show(id) { ["form","progress","result"].forEach(s => $(s).classList.toggle("hidden", s !== id)); scrollTo(0, 0); }
+let curStep = 0;
+function refreshSteps() { [...$("steps").children].forEach((li, i) => { li.className = i < curStep ? "done" : i === curStep ? "now" : ""; }); }
+function watch(errEl) {
+  clearInterval(poll); curStep = 0; refreshSteps();
+  poll = setInterval(async () => {
+    let j; try { j = await (await fetch(`/api/jobs/${jobId}`)).json(); } catch { return; }
+    curStep = j.step ?? 0; refreshSteps();
+    if (j.state === "done") { clearInterval(poll); showResult(j); }
+    else if (j.state === "error") { clearInterval(poll); show(errEl === "err2" ? "result" : "form"); showErr(j.error || "network", errEl); }
+  }, 1500);
+}
+let videos = {};
+function showResult(j) {
+  videos = j.videos || {};
+  const langs = Object.keys(videos);
+  $("vlang").classList.toggle("hidden", langs.length < 2);
+  setVideo(langs.includes(lang) ? lang : langs[0]);
+  $("xhs").textContent = j.xiaohongshu || ""; $("xhsBox").classList.toggle("hidden", !j.xiaohongshu);
+  $("mp").textContent = j.marketplace || ""; $("mpBox").classList.toggle("hidden", !j.marketplace);
+  $("tweak").value = ""; showErr(null);
+  show("result");
+}
+function setVideo(l) {
+  if (!l) return;
+  document.querySelectorAll("#vlang button").forEach(b => b.classList.toggle("on", b.dataset.v === l));
+  $("video").src = videos[l] + "?t=" + Date.now(); $("dl").href = videos[l] + "?dl=1";
+}
+$("vlang").onclick = e => e.target.dataset.v && setVideo(e.target.dataset.v);
+document.querySelectorAll("[data-c]").forEach(b => b.onclick = async () => {
+  const text = $(b.dataset.c).textContent;
+  try { await navigator.clipboard.writeText(text); }
+  catch { const r = document.createRange(); r.selectNodeContents($(b.dataset.c)); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand("copy"); }
+  b.textContent = ui().copied; setTimeout(() => b.textContent = ui().copy, 1500);
+});
+render();
+</script>
+</body>
+</html>

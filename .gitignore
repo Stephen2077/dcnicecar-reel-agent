@@ -1,0 +1,36 @@
+node_modules/
+.env
+.env.*
+.ref/
+data/
+out/
+jobs/
+*.mp4
+*.mp3
+*.wav
+.cache/
+# demo audio / generated media
+demo/
+*.m4a
+# logs
+logs/
+*.log
+npm-debug.log*
+# secrets / credentials
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+*cookies*
+*.cookie
+*.har
+secrets/
+credentials*.json
+# private auction (Manheim) adapter + snapshot builder — not public
+src/sources/manheim.ts
+src/cli/manheim.ts
+src/cli/build-snapshot.ts
